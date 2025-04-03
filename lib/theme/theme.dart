@@ -5,20 +5,22 @@ import 'package:get/get_utils/get_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Color primaryClr=Colors.white;
-// Color primaryClr=Colors.white;
-Color primaryClr = Colors.white;
-const Color darkGreClr = Color(0xFF121212);
-Color darkHeaderClr = Color(0xFF424242);
+const Color blueColor=Color(0xFF4e5ae8);
+const Color yellowColor=Color(0xFFFFB746);
+const Color pinkColor=Color(0xFFff4667);
+Color primaryClr = blueColor;
+const Color darkGreColor = Color(0xFF121212);
+const Color darkHeaderColor =  Color(0xFF424242);
 
 class Themes {
   static final light = ThemeData(
       backgroundColor: Colors.white,
-      primaryColor: Colors.white,
+      primaryColor: primaryClr,
       brightness: Brightness.light);
 
   static final dark = ThemeData(
-      backgroundColor: darkGreClr,
-      primaryColor: darkGreClr,
+      backgroundColor: darkGreColor,
+      primaryColor: darkGreColor,
       brightness: Brightness.dark);
 }
 
