@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:myreminder/db/db_helper.dart';
 import 'package:myreminder/screens/home_screen.dart';
 import 'package:myreminder/services/service.dart';
 import 'package:myreminder/theme/theme.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await  DBHelper.initDb();
   await GetStorage.init();
   runApp(const MyApp());
 }

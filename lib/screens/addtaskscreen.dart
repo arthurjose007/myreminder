@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:myreminder/controller/task_controller.dart';
+import 'package:myreminder/model/addtask.dart';
 import 'package:myreminder/theme/theme.dart';
 import 'package:myreminder/widgets/appbar.dart';
+import 'package:myreminder/widgets/button.dart';
 import 'package:myreminder/widgets/custominputfield.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -13,11 +16,17 @@ class AddTaskScreen extends StatefulWidget {
 }
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
+  final TaskController _taskController = Get.put(TaskController());
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _noteController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   String _endTime = "9:30 PM";
   String _startTime = DateFormat("hh:mm a").format(DateTime.now());
   int _selectedRemind = 5;
+  String _selectedRepeat = "None";
+  List<String> repeatList = ["None", "Daily", "Weekly", "Monthly"];
   List<int> remindList = [5, 10, 20, 30, 40];
+  int _selectedColor = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,8 +46,16 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 "Add Task",
                 style: headingStyle,
               ),
-              const CustomInputField(title: "Title", hint: "Enter your title"),
-              const CustomInputField(title: "Note", hint: "Enter your note"),
+              CustomInputField(
+                title: "Title",
+                hint: "Enter your title",
+                Controller: _titleController,
+              ),
+              CustomInputField(
+                title: "Note",
+                hint: "Enter your note",
+                Controller: _noteController,
+              ),
               CustomInputField(
                 title: "Date",
                 hint: DateFormat('dd-MM-yyyy').format(_selectedDate).toString(),
@@ -63,7 +80,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       onPressed: () {
                         _getTimeFromUser(isStarTime: true);
                       },
-                      icon: Icon(Icons.access_time),
+                      icon: Icon(
+                        Icons.access_time,
+                        color: Colors.blue,
+                      ),
                     ),
                   )),
                   SizedBox(
@@ -85,40 +105,162 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   )),
                 ],
               ),
-              CustomInputField(
-                title: "Remind",
-                hint: "$_selectedRemind minutes early",
-                widget:
-                DropdownButton(
-
-                  onChanged: (String? val) {
-                    setState(() {
-                      _selectedRemind=int.parse( val!);
-                    });
-                  },
-                  icon:const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.grey,
-                  ),
-                  elevation: 4,
-                  iconSize: 32,
-                  underline: Container(height: 0,),
-                  style: subtitleStyle,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField(
                   items: remindList.map<DropdownMenuItem<String>>((int value) {
                     return DropdownMenuItem<String>(
                       child: Text(
-                        value.toString(),
+                        "${value.toString()} minutes early",
                       ),
                       value: value.toString(),
                     );
                   }).toList(),
+                  decoration: InputDecoration(
+                    labelText: "Remind",
+                    hintText: "$_selectedRemind minutes early",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                  ),
+                  icon:
+                      const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                  elevation: 4,
+                  iconSize: 32,
+                  style: subtitleStyle,
+                  onChanged: (String? val) {
+                    setState(() {
+                      _selectedRemind = int.parse(val!);
+                    });
+                  },
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DropdownButtonFormField(
+                  items:
+                      repeatList.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      child: Text(
+                        "${value.toString()}",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      value: value.toString(),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: "Repeat",
+                    hintText: "$_selectedRepeat",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 16),
+                  ),
+                  icon:
+                      const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                  elevation: 4,
+                  iconSize: 32,
+                  style: subtitleStyle,
+                  onChanged: (String? val) {
+                    setState(() {
+                      _selectedRepeat = val!;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Color",
+                        style: titleStyle,
+                      ),
+                      Wrap(
+                        children: List<Widget>.generate(
+                          3,
+                          (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedColor = index;
+                                });
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  right: 8.0,
+                                ),
+                                child: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: index == 0
+                                      ? primaryClr
+                                      : index == 1
+                                          ? pinkColor
+                                          : yellowColor,
+                                  child: _selectedColor == index
+                                      ? Icon(
+                                          Icons.done,
+                                          color: Colors.white,
+                                          size: 19,
+                                        )
+                                      : Container(),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  CustomButton(
+                      label: "Create Task",
+                      onTap: () {
+                        _validateDate();
+                      })
+                ],
+              )
             ],
           ),
         ),
       ),
     );
+  }
+
+  _addTaskToDb() async {
+    int value = await _taskController.addTask(
+        addTask: AddTask(
+      note: _noteController.text,
+      title: _titleController.text,
+      date: DateFormat.yMd().format(_selectedDate).toString(),
+      startTime: _startTime,
+      endTime: _endTime,
+      remind: _selectedRemind,
+      repeat: _selectedRepeat,
+      color: _selectedColor,
+      isCompleted: 0,
+    ));
+    print("MY id id : $value");
+  }
+
+  _validateDate() {
+    if (_titleController.text.isNotEmpty && _noteController.text.isNotEmpty) {
+      //add to database
+      _addTaskToDb();
+      Get.back();
+    } else if (_titleController.text.isNotEmpty ||
+        _noteController.text.isEmpty) {
+      Get.snackbar("Required", "Please fill the fields",
+          snackPosition: SnackPosition.BOTTOM,
+          icon: Icon(Icons.warning_amber_rounded));
+    }
   }
 
   _getDateFormUser() async {
@@ -137,6 +279,34 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
+  // _getTimeFromUser({required bool isStarTime}) async {
+  //   var _pickedTime = await showTimePicker(
+  //     initialEntryMode: TimePickerEntryMode.input,
+  //     context: context,
+  //     initialTime: TimeOfDay(
+  //       hour: int.parse(_startTime.split(":")[0]),
+  //       minute: int.parse(_startTime.split(":")[1].split("")[0]),
+  //     ),
+  //   );
+  //   String _formatedTime = _pickedTime.toString();
+  //   if (_pickedTime == null) {
+  //     print("Time canceled");
+  //   } else if (isStarTime == true) {
+  //     setState(() {
+  //       _startTime = _formatedTime;
+  //
+  //     });
+  //     print(_startTime.toString());
+  //   } else if (isStarTime == false) {
+  //     setState(() {
+  //       _endTime = _formatedTime;
+  //
+  //     });
+  //     print(_endTime.toString());
+  //
+  //   }
+  // }
+  //
   _getTimeFromUser({required bool isStarTime}) async {
     var _pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,
@@ -146,17 +316,28 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         minute: int.parse(_startTime.split(":")[1].split("")[0]),
       ),
     );
-    String _formatedTime = _pickedTime.toString();
+
     if (_pickedTime == null) {
       print("Time canceled");
-    } else if (isStarTime == true) {
+      return;
+    }
+
+    // Format the time to 12-hour format with AM/PM
+    String period = _pickedTime.period == DayPeriod.am ? 'AM' : 'PM';
+    int hour = _pickedTime.hourOfPeriod;
+    String minute = _pickedTime.minute.toString().padLeft(2, '0');
+    String _formatedTime = '$hour:$minute $period';
+
+    if (isStarTime) {
       setState(() {
         _startTime = _formatedTime;
       });
-    } else if (isStarTime == false) {
+      print(_startTime);
+    } else {
       setState(() {
         _endTime = _formatedTime;
       });
+      print(_endTime);
     }
   }
 }
