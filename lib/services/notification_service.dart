@@ -17,9 +17,7 @@ class NotificationService {
   // INITIALIZE
   Future<void> initNotification() async {
     try {
-      // tz.initializeTimeZones();
-      // final String currentTimeZone= await FlutterTimezone.getLocalTimezone();
-      // tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
       tz.initializeTimeZones();
       final String timeZoneName = await FlutterTimezone.getLocalTimezone();
       // Fix for India's timezone naming
@@ -31,8 +29,6 @@ class NotificationService {
       print("initialisation started");
       if (_isInitialized) return;
 
-      // const AndroidInitializationSettings initializationSettingsAndroid =
-      // AndroidInitializationSettings('@mipmap/ic_launcher');
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
       const DarwinInitializationSettings initializationSettingsIOS =
@@ -94,150 +90,7 @@ class NotificationService {
       iOS: DarwinNotificationDetails(),
     );
   }
-  //Scheduled Notification time
-  // scheduledNotification() async {
-  //   print("this is scheduledNotification");
-  //   await flutterLocalNotificationsPlugin.zonedSchedule(
-  //       0,
-  //       'scheduled title',
-  //       'theme changes 5 seconds ago',
-  //       tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
-  //       const NotificationDetails(
-  //           android: AndroidNotificationDetails(
-  //             'your channel id',
-  //             'your channel name',
-  //           ),
-  //       ),
-  //       uiLocalNotificationDateInterpretation:
-  //       UILocalNotificationDateInterpretation.absoluteTime,
-  //       androidAllowWhileIdle: true,
-  //
-  //
-  //       androidScheduleMode: AndroidScheduleMode.alarmClock);
-  // }
-  // Future<void> scheduledNotification() async {
-  //   print("Scheduling notification...");
-  //
-  //   try {
-  //     // Initialize timezones if not already done
-  //     if (!tz.timeZoneDatabase.isInitialized) {
-  //       tz.initializeTimeZones();
-  //     }
-  //
-  //     final scheduledTime = tz.TZDateTime.now(tz.local).add(Duration(seconds: 5));
-  //     print("Notification scheduled for: $scheduledTime");
-  //
-  //     // Request necessary permissions (Android 12+)
-  //     if (Platform.isAndroid) {
-  //       await _requestNotificationPermissions();
-  //     }
-  //
-  //     await flutterLocalNotificationsPlugin.zonedSchedule(
-  //       0,
-  //       'Scheduled Title',
-  //       'This notification was scheduled 5 seconds ago',
-  //       scheduledTime,
-  //       const NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           'daily_channel_id',
-  //           'Daily Notification',
-  //           channelDescription: 'Daily Notification Channel',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //           playSound: true,
-  //           enableVibration: true,
-  //           colorized: true,
-  //         ),
-  //       ),
-  //       // androidAllowWhileIdle: true, // Critical for Android
-  //       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //       uiLocalNotificationDateInterpretation:
-  //       UILocalNotificationDateInterpretation.absoluteTime,
-  //       matchDateTimeComponents: DateTimeComponents.time,
-  //
-  //     );
-  //     print("Notification scheduled successfully");
-  //   } catch (e, stackTrace) {
-  //     print("Error scheduling notification: $e");
-  //     print("Stack trace: $stackTrace");
-  //   }
-  // }
-  //
-  //
 
-  //other option for scheduleNotification
-  // Future<void> scheduleNotification({
-  //   int id = 0,
-  //   String? title,
-  //   String? body,
-  //   Duration delay = const Duration(seconds: 5),
-  // }) async {
-  //   try {
-  //     if (!_isInitialized) await initNotification();
-  //     if (!await _checkAndroidPermissions()) return;
-  //
-  //     final scheduledTime = tz.TZDateTime.now(tz.local).add(delay);
-  //     print('Scheduling notification for $scheduledTime');
-  //
-  //     await flutterLocalNotificationsPlugin.zonedSchedule(
-  //       id,
-  //       title ?? 'Scheduled Notification',
-  //       body ?? 'This is a scheduled notification',
-  //       scheduledTime,
-  //       const NotificationDetails(
-  //         android: AndroidNotificationDetails(
-  //           'high_importance_channel',
-  //           'High Importance Notifications',
-  //           channelDescription: 'This channel is used for important notifications',
-  //           importance: Importance.max,
-  //           priority: Priority.high,
-  //           playSound: true,
-  //           enableVibration: true,
-  //         ),
-  //         iOS: DarwinNotificationDetails(),
-  //       ),
-  //       uiLocalNotificationDateInterpretation:
-  //       UILocalNotificationDateInterpretation.absoluteTime,
-  //       matchDateTimeComponents: DateTimeComponents.time,
-  //       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-  //     );
-  //
-  //     print('Notification scheduled successfully');
-  //   } catch (e, stackTrace) {
-  //     print('Error scheduling notification: $e');
-  //     print('Stack trace: $stackTrace');
-  //   }
-  // }
-
-  // Future<bool> _checkAndroidPermissions() async {
-  //   if (!Platform.isAndroid) return true;  // Skip if not Android
-  //
-  //   try {
-  //     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  //     final androidInfo = await deviceInfo.androidInfo;
-  //
-  //     // For Android 13+ (API 33+) - Need notification permission
-  //     if (androidInfo.version.sdkInt >= 33) {
-  //       final status = await Permission.notification.status;
-  //       if (!status.isGranted) {
-  //         await Permission.notification.request();
-  //       }
-  //     }
-  //
-  //     // For Android 12+ (API 31+) - Need exact alarm permission
-  //     if (androidInfo.version.sdkInt >= 31) {
-  //       final status = await Permission.scheduleExactAlarm.status;
-  //       if (!status.isGranted) {
-  //         await Permission.scheduleExactAlarm.request();
-  //       }
-  //     }
-  //
-  //     return true;
-  //   } catch (e) {
-  //     print('Error checking permissions: $e');
-  //     return false;
-  //   }
-  // }
 
   // SHOW NOTIFICATION
   Future<void> showNotification(
@@ -257,42 +110,7 @@ class NotificationService {
     - minute(0-59)
    */
 
-//   Future<void> scheduleNotification({
-//     int id = 1,
-//     required String title,
-//     required String body,
-//     required int hour,
-//     required int minute,
-//   }) async {
-//     //Get the current data/time in device's local timezone
-//     final now = tz.TZDateTime.now(tz.local);
-//     //Create a data/time for today at the specified hour/min
-//     var scheduleData = tz.TZDateTime(
-//       tz.local,
-//       now.year,
-//       now.month,
-//       now.day,
-//       hour,
-//       minute,
-//     );
-// //Schedule the notification
-//     await flutterLocalNotificationsPlugin.zonedSchedule(
-//       id,
-//       title,
-//       body,
-//       scheduleData,
-//       NotificationDetails(),
-//       //ios specific :Use exact time specified (vs relaive time)
-//       uiLocalNotificationDateInterpretation:
-//           UILocalNotificationDateInterpretation.absoluteTime,
-//       //Android specific :Allow notification while device is in low-power mode
-//       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-//       //Make notification repeat Daily at same time
-//       matchDateTimeComponents: DateTimeComponents.time,
-//     );
-//     print("Notification Scheduled");
-//   }
-  //Cancel all notification
+
 
   Future<void> scheduleNotification({
     int id = 1,
@@ -369,7 +187,7 @@ class NotificationService {
         matchDateTimeComponents: DateTimeComponents.time,
       );
 
-      print('✅ Notification scheduled for: $scheduledTime');
+      print('Notification scheduled for: $scheduledTime');
 
       // Debug pending notifications
       final pending = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
@@ -379,7 +197,7 @@ class NotificationService {
       }
 
     } catch (e, stackTrace) {
-      print('❌ Error scheduling notification: $e');
+      print('Error scheduling notification: $e');
       print(stackTrace);
     }
   }
@@ -410,7 +228,7 @@ class NotificationService {
       }
     }
 
-    // 5. Test immediate notification
+    // Test immediate notification
     print('\nTesting immediate notification...');
     await showNotification(
       title: 'Test Notification',
@@ -420,7 +238,9 @@ class NotificationService {
 
     print('\n=== END DEBUG INFO ===\n');
   }
-Future<void> cancelAllNotificatons()async{
+  //Cancel all notification
+
+  Future<void> cancelAllNotificatons()async{
     await flutterLocalNotificationsPlugin.cancelAll();
 }
 
