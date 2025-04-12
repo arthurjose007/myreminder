@@ -3,10 +3,11 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:myreminder/controller/task_controller.dart';
 import 'package:myreminder/model/addtask.dart';
-import 'package:myreminder/theme/theme.dart';
-import 'package:myreminder/widgets/appbar.dart';
-import 'package:myreminder/widgets/button.dart';
-import 'package:myreminder/widgets/custominputfield.dart';
+import 'package:myreminder/utils/widgets/theme/theme.dart';
+import 'package:myreminder/utils/widgets/appbar.dart';
+import 'package:myreminder/utils/widgets/custominputfield.dart';
+
+import '../utils/widgets/button.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});

@@ -7,13 +7,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:myreminder/screens/addtaskscreen.dart';
 import 'package:myreminder/services/service.dart';
-import 'package:myreminder/widgets/appbar.dart';
-import 'package:myreminder/widgets/button.dart';
+import 'package:myreminder/utils/widgets/appbar.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../services/notification_service.dart';
-import '../theme/theme.dart';
+import '../utils/widgets/theme/theme.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/widgets/button.dart';
 
 // class HomeScreen extends StatefulWidget {
 //   const HomeScreen({super.key});
