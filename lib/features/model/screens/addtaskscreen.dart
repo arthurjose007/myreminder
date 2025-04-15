@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:myreminder/controller/task_controller.dart';
-import 'package:myreminder/model/addtask.dart';
+import 'package:myreminder/features/model/controller/task_controller.dart';
+import 'package:myreminder/features/model/addtask.dart';
 import 'package:myreminder/utils/widgets/theme/theme.dart';
 import 'package:myreminder/utils/widgets/appbar.dart';
 import 'package:myreminder/utils/widgets/custominputfield.dart';
 
-import '../utils/widgets/button.dart';
+import '../../../utils/widgets/button.dart';
 
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
@@ -248,6 +248,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       color: _selectedColor,
       isCompleted: 0,
     ));
+    _taskController.getTasks();
     print("MY id id : $value");
   }
 
@@ -280,34 +281,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  // _getTimeFromUser({required bool isStarTime}) async {
-  //   var _pickedTime = await showTimePicker(
-  //     initialEntryMode: TimePickerEntryMode.input,
-  //     context: context,
-  //     initialTime: TimeOfDay(
-  //       hour: int.parse(_startTime.split(":")[0]),
-  //       minute: int.parse(_startTime.split(":")[1].split("")[0]),
-  //     ),
-  //   );
-  //   String _formatedTime = _pickedTime.toString();
-  //   if (_pickedTime == null) {
-  //     print("Time canceled");
-  //   } else if (isStarTime == true) {
-  //     setState(() {
-  //       _startTime = _formatedTime;
-  //
-  //     });
-  //     print(_startTime.toString());
-  //   } else if (isStarTime == false) {
-  //     setState(() {
-  //       _endTime = _formatedTime;
-  //
-  //     });
-  //     print(_endTime.toString());
-  //
-  //   }
-  // }
-  //
   _getTimeFromUser({required bool isStarTime}) async {
     var _pickedTime = await showTimePicker(
       initialEntryMode: TimePickerEntryMode.input,

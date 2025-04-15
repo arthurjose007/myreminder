@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:myreminder/db/db_helper.dart';
-import 'package:myreminder/screens/home_screen.dart';
-import 'package:myreminder/services/service.dart';
-import 'package:myreminder/theme/theme.dart';
+import 'package:myreminder/utils/widgets/db/db_helper.dart';
+import 'package:myreminder/features/model/screens/home_screen.dart';
+import 'package:myreminder/utils/widgets/theme/theme.dart';
 
-void main() async{
+import 'features/model/services/service.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await  DBHelper.initDb();
+  await DBHelper.initDb();
   await GetStorage.init();
   runApp(const MyApp());
 }
@@ -20,13 +21,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'MY REMINDER',
       debugShowCheckedModeBanner: false,
-      theme:Themes.light,
-     darkTheme: Themes.dark,
-     themeMode: ThemeService().theme,
-      home:const HomeScreen(),
+      theme: Themes.light,
+      darkTheme: Themes.dark,
+      themeMode: ThemeService().theme,
+      home: const HomeScreen(),
     );
   }
 }
-

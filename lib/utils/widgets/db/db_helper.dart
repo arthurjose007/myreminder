@@ -1,4 +1,4 @@
-import 'package:myreminder/model/addtask.dart';
+import 'package:myreminder/features/model/addtask.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
@@ -29,23 +29,21 @@ class DBHelper {
       print(e);
     }
   }
- static Future<int> insert(AddTask? task)async{
-    return await _db?.insert(_tableName, task!.toJson())??1;
- } 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+  static Future<int> insert(AddTask? task) async {
+    return await _db?.insert(_tableName, task!.toJson()) ?? 1;
+  }
+
+  static Future<List<Map<String, dynamic>>> query() async {
+    print("query function called");
+    return await _db!.query(_tableName);
+  }
+
+  static delete(AddTask task) {
+    var value = _db!.delete(_tableName, where: 'id=?', whereArgs: [task.id]);
+    return value;
+  }
+  static update(int id) async{
+  return await  _db!.rawUpdate('''UPDATE  task SET isCompleted WHERE id=?''',[1,id]);
+  }
 }

@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final Function()? onTap;
-  final bool isaddScreen ;
-  const AppBarWidget({super.key, required this.onTap, this.isaddScreen = false});
+  final bool isaddScreen;
+  const AppBarWidget(
+      {super.key, required this.onTap, this.isaddScreen = false});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:myreminder/theme/theme.dart';
+import 'package:myreminder/utils/widgets/theme/theme.dart';
 
 class CustomInputField extends StatelessWidget {
   final String title;
@@ -44,9 +44,10 @@ class CustomInputField extends StatelessWidget {
             children: [
               Expanded(
                 child: TextFormField(
-                  readOnly: widget==null?false:true,
+                  readOnly: widget == null ? false : true,
                   autofocus: false,
-                  cursorColor: Get.isDarkMode ? Colors.grey[100] : Colors.grey[600],
+                  cursorColor:
+                      Get.isDarkMode ? Colors.grey[100] : Colors.grey[600],
                   controller: Controller,
                   style: subHeadingStyle,
                   decoration: InputDecoration(
@@ -59,7 +60,11 @@ class CustomInputField extends StatelessWidget {
                   ),
                 ),
               ),
-              widget==null?Container():Container(child: widget,)
+              widget == null
+                  ? Container()
+                  : Container(
+                      child: widget,
+                    )
             ],
           ),
         )

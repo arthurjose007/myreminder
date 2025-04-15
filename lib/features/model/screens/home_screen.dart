@@ -1,130 +1,24 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/get_utils/get_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:myreminder/screens/addtaskscreen.dart';
-import 'package:myreminder/services/service.dart';
+import 'package:myreminder/features/model/addtask.dart';
+import 'package:myreminder/features/model/controller/task_controller.dart';
+import 'package:myreminder/features/model/screens/addtaskscreen.dart';
+import 'package:myreminder/features/model/services/service.dart';
 import 'package:myreminder/utils/widgets/appbar.dart';
+import 'package:myreminder/utils/widgets/tasktail.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 import '../services/notification_service.dart';
-import '../utils/widgets/theme/theme.dart';
+import '../../../utils/widgets/theme/theme.dart';
 import 'package:flutter/material.dart';
 
-import '../utils/widgets/button.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   DateTime _selectedDate = DateTime.now();
-//   DateTime _currentMonth = DateTime.now();
-//
-//   void _nextMonth() {
-//     setState(() {
-//       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1);
-//     });
-//   }
-//
-//   void _prevMonth() {
-//     setState(() {
-//       _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1);
-//     });
-//   }
-//
-//   void _selectYear() async {
-//     final DateTime? picked = await showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text("Select Year"),
-//           content: SizedBox(
-//             width: 300,
-//             height: 300,
-//             child: YearPicker(
-//               firstDate: DateTime(DateTime.now().year - 10),
-//               lastDate: DateTime(DateTime.now().year + 10),
-//               initialDate: _currentMonth,
-//               selectedDate: _currentMonth,
-//               onChanged: (DateTime dateTime) {
-//                 setState(() {
-//                   _currentMonth = DateTime(dateTime.year, _currentMonth.month);
-//                 });
-//                 Navigator.pop(context);
-//               },
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Theme.of(context).secondaryHeaderColor,
-//       body: Column(
-//         children: [
-//           SizedBox(height: 40,),
-//           // Month/Year selector
-//           Padding(
-//             padding: const EdgeInsets.symmetric(vertical: 8.0),
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 IconButton(
-//                     onPressed: _prevMonth,
-//                     icon: Icon(Icons.chevron_left, color: primaryClr)),
-//                 TextButton(
-//                   onPressed: _selectYear,
-//                   child: Text(
-//                     DateFormat('MMMM yyyy').format(_currentMonth),
-//                     style: TextStyle(
-//                       fontSize: 20,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.black,
-//                     ),
-//                   ),
-//                 ),
-//                 IconButton(
-//                     onPressed: _nextMonth,
-//                     icon: Icon(Icons.chevron_right, color: primaryClr)),
-//               ],
-//             ),
-//           ),
-//           // Date picker
-//           Container(
-//             child: DatePicker(
-//               _currentMonth,
-//               height: 100,
-//               width: 80,
-//               initialSelectedDate: _selectedDate,
-//               selectionColor: primaryClr,
-//               selectedTextColor: Colors.white,
-//               dateTextStyle: TextStyle(
-//                 fontSize: 20,
-//                 fontWeight: FontWeight.w600,
-//                 color: Colors.grey,
-//               ),
-//               onDateChange: (date) {
-//                 setState(() {
-//                   _selectedDate = date;
-//                 });
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
+import '../../../utils/widgets/button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -136,13 +30,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var notifyHelper;
   DateTime selecteddate = DateTime.now();
+  final _taskController = Get.put(TaskController());
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     notifyHelper = NotificationService();
     notifyHelper.initNotification();
-    // notifyHelper.scheduledNotification();
     notifyHelper.initNotification().then((_) {
       notifyHelper.debugNotificationSystem(); // Add this line
     });
@@ -182,7 +76,136 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           _appTapBar(),
           _addDateBar(),
+          _showTasks(),
         ],
+      ),
+    );
+  }
+
+  _showTasks() {
+    return Expanded(child: Obx(() {
+      return ListView.builder(
+          itemCount: _taskController.taskList.length,
+          itemBuilder: (context, index) {
+            final task = _taskController.taskList[index];
+            // _taskController.delete(_taskController.taskList[index]);
+            // _taskController.getTasks();
+            return AnimationConfiguration.staggeredList(
+              position: index,
+              child: SlideAnimation(
+                child: FadeInAnimation(
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          print("Tapped");
+                          _showBottomSheet(context, task);
+                        },
+                        child: TaskTile(_taskController.taskList[index]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          });
+    }));
+  }
+
+  _showBottomSheet(BuildContext context, AddTask task) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.only(top: 4),
+        width: MediaQuery.of(context).size.width,
+        height: task.isCompleted == 1
+            ? MediaQuery.of(context).size.height * 0.04
+            : MediaQuery.of(context).size.height * 0.32,
+        color: Get.isDarkMode ? darkGreColor : Colors.white,
+        child: Column(
+          children: [
+            Container(
+                height: 6,
+                width: 120,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300],
+                )),
+            const SizedBox(
+              height: 7,
+              width: 200,
+            ),
+            task.isCompleted == 1
+                ? const SizedBox()
+                : _bottomSheetButton(
+                    lable: "Task Completed",
+                    onTap: () {
+
+                    },
+                    Clr: primaryClr,
+                  ),
+            const SizedBox(
+              height: 10,
+            ),
+            _bottomSheetButton(
+              lable: "Delete Task",
+              onTap: () {
+                _taskController.delete(task);
+                _taskController.getTasks();
+                Get.back();},
+              Clr: Colors.red,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            _bottomSheetButton(
+              lable: "Close",
+              onTap: () {
+                Get.back();
+              },
+              Clr: Colors.red,
+              isColse: true,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _bottomSheetButton({
+    required String lable,
+    required Function() onTap,
+    required Color Clr,
+    bool isColse = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          vertical: 4,
+        ),
+        height: 60,
+        width: MediaQuery.of(context).size.width * 0.9,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: isColse == true
+                ? Get.isDarkMode
+                    ? Colors.grey[600]!
+                    : Colors.grey[300]!
+                : Clr,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          // color: Colors.red,
+
+          color: isColse == true ? Colors.transparent : Clr,
+        ),
+        child: Center(
+            child: Text(
+          lable,
+          style:
+              isColse ? titleStyle : titleStyle.copyWith(color: Colors.white),
+
+        )),
       ),
     );
   }
@@ -248,5 +271,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }

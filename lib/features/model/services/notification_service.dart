@@ -17,7 +17,6 @@ class NotificationService {
   // INITIALIZE
   Future<void> initNotification() async {
     try {
-
       tz.initializeTimeZones();
       final String timeZoneName = await FlutterTimezone.getLocalTimezone();
       // Fix for India's timezone naming
@@ -91,7 +90,6 @@ class NotificationService {
     );
   }
 
-
   // SHOW NOTIFICATION
   Future<void> showNotification(
       {int id = 0, String? title, String? body}) async {
@@ -109,8 +107,6 @@ class NotificationService {
     - hour (0-23)
     - minute(0-59)
    */
-
-
 
   Future<void> scheduleNotification({
     int id = 1,
@@ -131,7 +127,7 @@ class NotificationService {
         now.year,
         now.month,
         now.day,
-        hour,    // Use 24-hour format (15 for 3 PM)
+        hour, // Use 24-hour format (15 for 3 PM)
         minute,
       );
       print('Original scheduled time: $scheduledTime');
@@ -158,7 +154,6 @@ class NotificationService {
         // if (!await Permission.ignoreBatteryOptimizations.isGranted) {
         //   await Permission.ignoreBatteryOptimizations.request();
         // }
-
       }
 
       // Schedule with exact timing
@@ -182,7 +177,7 @@ class NotificationService {
           iOS: DarwinNotificationDetails(),
         ),
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+            UILocalNotificationDateInterpretation.absoluteTime,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
       );
@@ -190,17 +185,18 @@ class NotificationService {
       print('Notification scheduled for: $scheduledTime');
 
       // Debug pending notifications
-      final pending = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+      final pending =
+          await flutterLocalNotificationsPlugin.pendingNotificationRequests();
       print('Pending notifications: ${pending.length}');
       for (var n in pending) {
         print('Pending ID: ${n.id} - "${n.title}" at ${n.body}');
       }
-
     } catch (e, stackTrace) {
       print('Error scheduling notification: $e');
       print(stackTrace);
     }
   }
+
   Future<void> debugNotificationSystem() async {
     print('\n=== NOTIFICATION DEBUG INFO ===');
 
@@ -216,7 +212,7 @@ class NotificationService {
     if (Platform.isAndroid) {
       final channels = await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+              AndroidFlutterLocalNotificationsPlugin>()
           ?.getNotificationChannels();
       print('Notification channels: $channels');
 
@@ -240,8 +236,7 @@ class NotificationService {
   }
   //Cancel all notification
 
-  Future<void> cancelAllNotificatons()async{
+  Future<void> cancelAllNotificatons() async {
     await flutterLocalNotificationsPlugin.cancelAll();
-}
-
+  }
 }
