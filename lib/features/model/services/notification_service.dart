@@ -197,44 +197,6 @@ class NotificationService {
     }
   }
 
-  Future<void> debugNotificationSystem() async {
-    print('\n=== NOTIFICATION DEBUG INFO ===');
-
-    // 1. Check timezone
-    print('Current timezone: ${tz.local.name}');
-    print('Local time: ${tz.TZDateTime.now(tz.local)}');
-    print('UTC time: ${DateTime.now().toUtc()}');
-
-    // 2. Check initialization
-    print('Notification initialized: $_isInitialized');
-
-    // 3. Check Android channel
-    if (Platform.isAndroid) {
-      final channels = await flutterLocalNotificationsPlugin
-          .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
-          ?.getNotificationChannels();
-      print('Notification channels: $channels');
-
-      // 4. Check permissions
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if (androidInfo.version.sdkInt >= 33) {
-        final status = await Permission.notification.status;
-        print('Notification permission: $status');
-      }
-    }
-
-    // Test immediate notification
-    print('\nTesting immediate notification...');
-    await showNotification(
-      title: 'Test Notification',
-      body: 'This should appear immediately',
-    );
-    print('Immediate notification triggered');
-
-    print('\n=== END DEBUG INFO ===\n');
-  }
-  //Cancel all notification
 
   Future<void> cancelAllNotificatons() async {
     await flutterLocalNotificationsPlugin.cancelAll();

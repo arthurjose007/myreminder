@@ -37,9 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     notifyHelper = NotificationService();
     notifyHelper.initNotification();
-    notifyHelper.initNotification().then((_) {
-      notifyHelper.debugNotificationSystem(); // Add this line
-    });
+    // notifyHelper.initNotification().then((_) {
+    //   notifyHelper.debugNotificationSystem(); // Add this line
+    // });
   }
 
   @override
@@ -57,12 +57,12 @@ class _HomeScreenState extends State<HomeScreen> {
           // notifyHelper.scheduledNotification();
           final now = tz.TZDateTime.now(tz.local);
 
-          NotificationService().scheduleNotification(
-            title: "title",
-            body: "body",
-            hour: now.hour,
-            minute: now.minute + 1,
-          );
+          // NotificationService().scheduleNotification(
+          //   title: "title",
+          //   body: "body",
+          //   hour: now.hour,
+          //   minute: now.minute + 1,
+          // );
           // NotificationService().scheduleNotification(
           //   title: "title2",
           //   body: "body",
