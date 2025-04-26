@@ -44,6 +44,6 @@ class DBHelper {
     return value;
   }
   static update(int id) async{
-  return await  _db!.rawUpdate('''UPDATE  task SET isCompleted WHERE id=?''',[1,id]);
+  return await  _db!.rawUpdate('''UPDATE  $_tableName SET isCompleted = ? WHERE id=?''',[1,id]);
   }
 }

@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/widgets/button.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -29,17 +29,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var notifyHelper;
+
   DateTime selecteddate = DateTime.now();
+
   final _taskController = Get.put(TaskController());
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     notifyHelper = NotificationService();
     notifyHelper.initNotification();
-    // notifyHelper.initNotification().then((_) {
-    //   notifyHelper.debugNotificationSystem(); // Add this line
-    // });
+
   }
 
   @override
@@ -58,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
           final now = tz.TZDateTime.now(tz.local);
 
           // NotificationService().scheduleNotification(
-          //   title: "title",
-          //   body: "body",
+          //   "title",
+          //   "body",
           //   hour: now.hour,
           //   minute: now.minute + 1,
           // );
@@ -88,37 +89,73 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: _taskController.taskList.length,
           itemBuilder: (context, index) {
             final task = _taskController.taskList[index];
-            // _taskController.delete(_taskController.taskList[index]);
-            // _taskController.getTasks();
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          print("Tapped");
-                          _showBottomSheet(context, task);
-                        },
-                        child: TaskTile(_taskController.taskList[index]),
-                      ),
-                    ],
+            // print(task.toJson());
+            // print(task.date);
+            print("this is format");
+            final taskDate = DateFormat('M/d/yyyy').parse(task.date.toString());
+            DateTime date = DateFormat.jm().parse(task.startTime.toString());
+            var myNewtime = DateFormat("HH:mm").format(date);
+            print(myNewtime);
+            NotificationService().scheduleNotification(
+                "This is from hour", "Today",
+                hour: int.parse(myNewtime.toString().split(":")[0]),
+                minute: int.parse(myNewtime.toString().split(":")[1]),
+                task: task);
+            if (task.repeat == 'Daily') {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            print("Tapped");
+                            _showBottomSheet(context, task);
+                          },
+                          child: TaskTile(task),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            }
+            if (DateFormat('M/d/yyyy').format(taskDate) ==
+                DateFormat('M/d/yyyy').format(selecteddate)) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            print("Tapped");
+                            _showBottomSheet(context, task);
+                          },
+                          child: TaskTile(task),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
           });
     }));
   }
 
+  // _showTasks() {
   _showBottomSheet(BuildContext context, AddTask task) {
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.only(top: 4),
         width: MediaQuery.of(context).size.width,
         height: task.isCompleted == 1
-            ? MediaQuery.of(context).size.height * 0.04
+            ? MediaQuery.of(context).size.height * 0.28
             : MediaQuery.of(context).size.height * 0.32,
         color: Get.isDarkMode ? darkGreColor : Colors.white,
         child: Column(
@@ -137,9 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
             task.isCompleted == 1
                 ? const SizedBox()
                 : _bottomSheetButton(
+                    context: context,
                     lable: "Task Completed",
                     onTap: () {
-
+                      _taskController.TaskCompleted(task.id!);
+                      Get.back();
                     },
                     Clr: primaryClr,
                   ),
@@ -147,17 +186,19 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 10,
             ),
             _bottomSheetButton(
+              context: context,
               lable: "Delete Task",
               onTap: () {
                 _taskController.delete(task);
-                _taskController.getTasks();
-                Get.back();},
+                Get.back();
+              },
               Clr: Colors.red,
             ),
             const SizedBox(
               height: 10,
             ),
             _bottomSheetButton(
+              context: context,
               lable: "Close",
               onTap: () {
                 Get.back();
@@ -176,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required Function() onTap,
     required Color Clr,
     bool isColse = false,
+    required BuildContext context,
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -204,7 +246,6 @@ class _HomeScreenState extends State<HomeScreen> {
           lable,
           style:
               isColse ? titleStyle : titleStyle.copyWith(color: Colors.white),
-
         )),
       ),
     );
@@ -230,7 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 15, fontWeight: FontWeight.w600, color: Colors.grey)),
         onDateChange: (DateTime date) {
           selecteddate = date;
-          print(selecteddate);
+          // print(selecteddate);
+          print(
+              "Selected date changed to: ${DateFormat.yMd().format(selecteddate)}");
         },
       ),
     );
@@ -263,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           CustomButton(
-              label: "+ Add Task",
+              label: "+ Add",
               onTap: () {
                 Get.to(AddTaskScreen());
               }),
