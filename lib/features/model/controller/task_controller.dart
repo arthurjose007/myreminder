@@ -11,9 +11,11 @@ class TaskController extends GetxController {
 
     super.onReady();
   }
-  // TaskController(){
-  //   InitNotifications();
-  // }
+  TaskController(){
+    // InitNotifications();
+   var notifyHelper = NotificationService();
+    notifyHelper.initNotification();
+  }
   Future<void> InitNotifications() async{
     var notifyHelper = NotificationService();
     await notifyHelper.initNotification();

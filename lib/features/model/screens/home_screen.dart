@@ -20,66 +20,55 @@ import 'package:flutter/material.dart';
 
 import '../../../utils/widgets/button.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  var notifyHelper;
 
   DateTime selecteddate = DateTime.now();
 
   final _taskController = Get.put(TaskController());
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    notifyHelper = NotificationService();
-    notifyHelper.initNotification();
-
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBarWidget(
-        onTap: () {
-          ThemeService().switchTheme();
-          NotificationService().showNotification(
-              title: "Theme Changed",
-              body: Get.isDarkMode
-                  ? "Activated Light Theme"
-                  : "Activated Dark Theme");
-          // notifyHelper.scheduledNotification();
-          final now = tz.TZDateTime.now(tz.local);
+    return GetBuilder<TaskController>(
+      builder: (contexts) {
+        return Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          appBar: AppBarWidget(
+            onTap: () {
+              ThemeService().switchTheme();
+              NotificationService().showNotification(
+                  title: "Theme Changed",
+                  body: Get.isDarkMode
+                      ? "Activated Light Theme"
+                      : "Activated Dark Theme");
+              // notifyHelper.scheduledNotification();
+              final now = tz.TZDateTime.now(tz.local);
 
-          // NotificationService().scheduleNotification(
-          //   "title",
-          //   "body",
-          //   hour: now.hour,
-          //   minute: now.minute + 1,
-          // );
-          // NotificationService().scheduleNotification(
-          //   title: "title2",
-          //   body: "body",
-          //   hour: 9,
-          //   minute: 30,
-          // );
-        },
-      ),
-      //_appBar(context),
-      body: Column(
-        children: [
-          _appTapBar(),
-          _addDateBar(),
-          _showTasks(),
-        ],
-      ),
+              // NotificationService().scheduleNotification(
+              //   "title",
+              //   "body",
+              //   hour: now.hour,
+              //   minute: now.minute + 1,
+              // );
+              // NotificationService().scheduleNotification(
+              //   title: "title2",
+              //   body: "body",
+              //   hour: 9,
+              //   minute: 30,
+              // );
+            },
+          ),
+          //_appBar(context),
+          body: Column(
+            children: [
+              _appTapBar(),
+              _addDateBar(),
+              _showTasks(),
+            ],
+          ),
+        );
+      }
     );
   }
 
@@ -308,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
           CustomButton(
               label: "+ Add",
               onTap: () {
-                Get.to(AddTaskScreen());
+                Get.to(const AddTaskScreen());
               }),
         ],
       ),
